@@ -8,7 +8,7 @@ ENV PYTHONUNBUFFERED=1
 # Crie o diretório da aplicação
 WORKDIR /app
 
-# Copie o conteúdo do diretório api para dentro de /app/api
+# Copie o conteúdo do diretório api para dentro de /app
 COPY . /app
 
 RUN pip install --upgrade pip
@@ -16,7 +16,9 @@ RUN pip install --upgrade pip
 # Instale as dependências
 RUN python -m pip install --no-cache-dir -r /app/requirements.txt
 
-RUN python /app/manage.py collectstatic --noinput
+# Adicione o entrypoint script
+COPY ./entrypoint.sh /app/entrypoint.sh
+RUN chmod +x /app/entrypoint.sh
 
 # Adicione o diretório raiz ao PYTHONPATH
 ENV PYTHONPATH="/app"
@@ -25,5 +27,8 @@ ENV PYTHONPATH="/app"
 RUN adduser --disabled-password --gecos "" appuser && chown -R appuser /app
 USER appuser
 
-# Execute o projeto no guinicorn
+# Defina o entrypoint script
+ENTRYPOINT ["/app/entrypoint.sh"]
+
+# Execute o projeto no Gunicorn
 CMD ["gunicorn", "--bind", "0.0.0.0:8000", "core.wsgi:application"]
