@@ -8,7 +8,7 @@ ENV PYTHONUNBUFFERED=1
 # Crie o diretório da aplicação
 WORKDIR /app
 
-# Copie o conteúdo do diretório api para dentro de /app
+# Copie todo o conteúdo do diretório atual (que já é o diretório api) para /app
 COPY . /app
 
 RUN pip install --upgrade pip
@@ -16,9 +16,14 @@ RUN pip install --upgrade pip
 # Instale as dependências
 RUN python -m pip install --no-cache-dir -r /app/requirements.txt
 
-# Adicione o entrypoint script
-COPY ./entrypoint.sh /app/entrypoint.sh
-RUN chmod +x /app/entrypoint.sh
+RUN mkdir -p /app/staticfiles
+
+# Crie o entrypoint.sh diretamente no Dockerfile
+RUN echo '#!/bin/sh' > /app/entrypoint.sh && \
+    echo 'python manage.py migrate' >> /app/entrypoint.sh && \
+    echo 'python manage.py collectstatic --noinput' >> /app/entrypoint.sh && \
+    echo 'exec "$@"' >> /app/entrypoint.sh && \
+    chmod +x /app/entrypoint.sh
 
 # Adicione o diretório raiz ao PYTHONPATH
 ENV PYTHONPATH="/app"
@@ -27,7 +32,7 @@ ENV PYTHONPATH="/app"
 RUN adduser --disabled-password --gecos "" appuser && chown -R appuser /app
 USER appuser
 
-# Defina o entrypoint script
+# Use o novo entrypoint
 ENTRYPOINT ["/app/entrypoint.sh"]
 
 # Execute o projeto no Gunicorn
