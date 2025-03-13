@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="pt">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Editar Agenda</title>
+</head>
+<body>
+    <h1>Editar Agenda</h1>
+    <form id="agenda-form">
+        <label>Título: <input type="text" name="titulo" id="titulo" required></label><br>
+        <label>Descrição: <textarea name="descricao" id="descricao"></textarea></label><br>
+        <label>Data Início: <input type="datetime-local" name="dataInicio" id="dataInicio" required></label><br>
+        <label>Data Fim: <input type="datetime-local" name="dataFim" id="dataFim" required></label><br>
+        <label>Local: <input type="text" name="local" id="local" required></label><br>
+        <label>Estado: 
+            <select name="estadoAtualAgenda" id="estadoAtualAgenda">
+                <option value="PENDENTE">Pendente</option>
+                <option value="CONFIRMADA">Confirmada</option>
+                <option value="CANCELADA">Cancelada</option>
+                <option value="CONCLUIDA">Concluída</option>
+            </select>
+        </label><br>
+        <button type="submit">Salvar</button>
+    </form>
+
+    <script>
+        const id = window.location.pathname.split("/")[3];
+
+        async function carregarAgenda() {
+            const response = await fetch(`http://127.0.0.1:8000/agendas/${id}/`);
+            const agenda = await response.json();
+            document.getElementById("titulo").value = agenda.titulo;
+            document.getElementById("descricao").value = agenda.descricao;
+            document.getElementById("dataInicio").value = agenda.dataInicio;
+            document.getElementById("dataFim").value = agenda.dataFim;
+            document.getElementById("local").value = agenda.local;
+            document.getElementById("estadoAtualAgenda").value = agenda.estadoAtualAgenda;
+        }
+
+        document.getElementById("agenda-form").addEventListener("submit", async function(event) {
+            event.preventDefault();
+            const formData = new FormData(this);
+            const data = Object.fromEntries(formData);
+            await fetch(`http://127.0.0.1:8000/agendas/${id}/`, {
+                method: "PUT",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify(data)
+            });
+            window.location.href = "/webapp/";
+        });
+
+        carregarAgenda();
+    </script>
+</body>
+</html>

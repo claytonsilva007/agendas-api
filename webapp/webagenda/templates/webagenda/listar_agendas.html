@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="pt">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lista de Agendas</title>
+</head>
+<body>
+    <h1>Lista de Agendas</h1>
+    <a href="{% url 'criar_agenda' %}">Criar Nova Agenda</a>
+    <ul id="agendas-list"></ul>
+
+    <script>
+        async function carregarAgendas() {
+            const response = await fetch("http://127.0.0.1:8000/agendas/");
+            const agendas = await response.json();
+            const lista = document.getElementById("agendas-list");
+
+            agendas.forEach(agenda => {
+                let item = document.createElement("li");
+                item.innerHTML = `
+                    <strong>${agenda.titulo}</strong> - ${agenda.estadoAtualAgenda}
+                    <a href="/webapp/editar/${agenda.id}/">Editar</a>
+                    <a href="#" onclick="deletarAgenda(${agenda.id})">Deletar</a>
+                `;
+                lista.appendChild(item);
+            });
+        }
+
+        async function deletarAgenda(id) {
+            await fetch(`http://127.0.0.1:8000/agendas/${id}/`, { method: "DELETE" });
+            location.reload();
+        }
+
+        carregarAgendas();
+    </script>
+</body>
+</html>
