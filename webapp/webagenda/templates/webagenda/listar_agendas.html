@@ -7,26 +7,26 @@
         <h2 class="text-center mb-4">Agenda Semanal</h2>
 
         <!-- Cabeçalho da Tabela -->
-        <div class="row bg-light border text-center fw-bold py-2">
-            <div class="col-1 col-md"></div>
-            <div class="col-2 col-md">Seg.</div>
-            <div class="col-2 col-md">Ter.</div>
-            <div class="col-2 col-md">Qua.</div>
-            <div class="col-2 col-md">Qui.</div>
-            <div class="col-2 col-md">Sex.</div>
+        <div class="row bg-light text-center fw-bold py-2 bg-dark" style="border-bottom: 1px solid rgba(0, 0, 0, 0.4);">
+            <div class="col-1 col-md text-white"></div>
+            <div class="col-2 col-md text-white">Seg.</div>
+            <div class="col-2 col-md text-white">Ter.</div>
+            <div class="col-2 col-md text-white">Qua.</div>
+            <div class="col-2 col-md text-white">Qui.</div>
+            <div class="col-2 col-md text-white">Sex.</div>
         </div>
 
         <!-- Corpo da Tabela -->
         {% for hora in horas_do_dia %}
-            <div class="row border">
+            <div class="row" style="border-bottom: 1px solid rgba(0, 0, 0, 0.4);">
                 <!-- Coluna de Hora -->
-                <div class="col-1 col-md text-center bg-light py-2 d-flex align-items-center justify-content-center">
-                    {{ hora|slice:":2" }}  <!-- Exibe apenas a hora (ex: "07" ao invés de "07:00") -->
+                <div class="col-1 col-md text-center bg-dark py-2 d-flex align-items-center justify-content-center" style="border-right: 1px solid rgba(0, 0, 0, 0.4);">
+                    <span class="text-white">{{ hora|slice:":2" }}</span> 
                 </div>
                 
                 <!-- Colunas dos Dias da Semana -->
                 {% for dia in dias_da_semana %}
-                    <div class="col-2 col-md border py-2 position-relative" style="min-height: 60px; overflow: hidden;">
+                    <div class="col-2 col-md py-2 position-relative" style="border-right: 1px solid rgba(0, 0, 0, 0.4); border-bottom: 1px solid rgba(0, 0, 0, 0.5); min-height: 60px; overflow: hidden;">
                         {% for evento in agenda_grid|dict_get:dia|dict_get:hora %}
                             <a href="{% url 'gerenciar_agenda' evento.id %}" 
                                class="bg-primary text-white rounded px-2 py-1 small w-100 d-flex align-items-center justify-content-center" 

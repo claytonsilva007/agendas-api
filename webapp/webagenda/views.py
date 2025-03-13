@@ -56,7 +56,6 @@ def _round_time(dt):
     return dt.replace(minute=minutes, second=0, microsecond=0)
 
 
-
 def gerenciar_agenda(request, id=None):
     if request.method == "POST":
         titulo = request.POST.get("titulo")
@@ -98,7 +97,6 @@ def gerenciar_agenda(request, id=None):
             agenda['dataFim'] = datetime.strptime(agenda['dataFim'], "%Y-%m-%dT%H:%M:%SZ").strftime("%Y-%m-%dT%H:%M")
 
     return render(request, "webagenda/gerenciar_agenda.html", {"agenda": agenda})
-
 
 
 def deletar_agenda(request, id):
