@@ -1,0 +1,62 @@
+<div class="mt-1"></div>
+<nav class="navbar navbar-expand-lg navbar-dark bg-dark sticky-top">
+    <div class="container-fluid">
+        
+        <!-- Logo da Navbar -->
+        <a class="navbar-brand ms-3 text-success" href="#">Webagenda</a>
+        
+        <!-- Botão do Offcanvas -->
+        <button class="navbar-toggler bg-success" 
+                type="button" 
+                data-bs-toggle="offcanvas" 
+                data-bs-target="#offcanvasNavbar" 
+                aria-controls="offcanvasNavbar" 
+                aria-expanded="false" 
+                aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        
+        <!-- Menu Offcanvas -->
+        <div class="offcanvas offcanvas-start bg-dark" 
+             tabindex="-1" 
+             id="offcanvasNavbar" 
+             aria-labelledby="offcanvasNavbarLabel">
+
+            <!-- Cabeçalho do Offcanvas -->
+            <div class="offcanvas-header">
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="offcanvas" aria-label="Close"></button>
+            </div>
+            
+            <!-- Corpo do Offcanvas -->
+            <div class="offcanvas-body">
+                
+                <!-- Informações do Usuário no Mobile -->
+                <div class="d-lg-none user-info mb-5 text-center">
+                   <h4 class="my-2 text-success"> Webagenda </h4>
+                    <a href="" class="btn btn-success text-white text-decoration-none">Login</a>
+                </div>
+    
+                <!-- Itens do Navbar -->
+                <ul class="navbar-nav justify-content-center flex-grow-1 pe-3">
+                    
+                    <li class="nav-item">
+                        <a class="nav-link active text-warning" aria-current="page" href="">
+                            <i class="fa-solid fa-house mx-2 d-lg-none"></i> Menu 01
+                        </a>
+                    </li>
+                    
+                    <li class="nav-item">
+                        <a class="nav-link active text-warning" aria-current="page" href="">
+                            <i class="fa-solid fa-house mx-2 d-lg-none"></i> Menu 02
+                        </a>
+                    </li>                   
+            </div>
+        </div>
+        
+        <!-- Login para Dispositivos Grandes -->
+        <div id="id-auth-container" class="d-none d-lg-block mt-1">
+            <a class="btn btn-outline-success me-3" href="">Login</a>
+        </div>
+        
+    </div>
+</nav>
