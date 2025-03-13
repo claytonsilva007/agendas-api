@@ -6,8 +6,9 @@
         
         <h2 class="text-center mb-4">Agenda Semanal</h2>
 
+        <!-- Cabeçalho da Tabela -->
         <div class="row bg-light border text-center fw-bold py-2">
-            <div class="col-1 col-md">Hora</div>
+            <div class="col-1 col-md"></div>
             <div class="col-2 col-md">Seg.</div>
             <div class="col-2 col-md">Ter.</div>
             <div class="col-2 col-md">Qua.</div>
@@ -15,14 +16,21 @@
             <div class="col-2 col-md">Sex.</div>
         </div>
 
+        <!-- Corpo da Tabela -->
         {% for hora in horas_do_dia %}
             <div class="row border">
-                <div class="col-1 col-md text-center bg-light py-2 d-flex align-items-center justify-content-center">{{ hora }}</div>
+                <!-- Coluna de Hora -->
+                <div class="col-1 col-md text-center bg-light py-2 d-flex align-items-center justify-content-center">
+                    {{ hora|slice:":2" }}  <!-- Exibe apenas a hora (ex: "07" ao invés de "07:00") -->
+                </div>
                 
+                <!-- Colunas dos Dias da Semana -->
                 {% for dia in dias_da_semana %}
-                    <div class="col-2 col-md border py-2 position-relative d-flex align-items-center justify-content-center" style="min-height: 50px; overflow: hidden;">
+                    <div class="col-2 col-md border py-2 position-relative" style="min-height: 60px; overflow: hidden;">
                         {% for evento in agenda_grid|dict_get:dia|dict_get:hora %}
-                            <a href="{% url 'gerenciar_agenda' evento.id %}" class="bg-primary text-white rounded px-2 py-1 small w-100 h-100 position-absolute d-flex align-items-center justify-content-center" style="top: 0; left: 0; margin: 0; padding: 0; text-decoration: none;">
+                            <a href="{% url 'gerenciar_agenda' evento.id %}" 
+                               class="bg-primary text-white rounded px-2 py-1 small w-100 d-flex align-items-center justify-content-center" 
+                               style="margin: 2px; text-decoration: none;">
                                 <strong>{{ evento.titulo }}</strong>
                             </a>
                         {% endfor %}

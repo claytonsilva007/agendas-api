@@ -12,9 +12,9 @@ def listar_agendas(request):
     response = requests.get(API_URL)
     eventos = response.json() if response.status_code == 200 else []
 
-    # Criar a estrutura do grid
+    # Criar estrutura do grid com horas inteiras
     dias_da_semana = ["Segunda", "Terça", "Quarta", "Quinta", "Sexta"]
-    horas_do_dia = [f"{h:02d}:{m:02d}" for h in range(0, 24) for m in [0, 15, 30, 45]]
+    horas_do_dia = [f"{h:02d}:00" for h in range(7, 24)]  # Apenas horas inteiras
     agenda_grid = {dia: {hora: [] for hora in horas_do_dia} for dia in dias_da_semana}
 
     # Preencher o grid com eventos
@@ -33,22 +33,28 @@ def listar_agendas(request):
         }.get(nome_dia, "")
 
         if dia_semana:
-            hora_inicio = data_inicio.strftime("%H:%M")
-            hora_fim = data_fim.strftime("%H:%M")
+            hora_inicio = data_inicio.strftime("%H:00")  # Arredondando para hora cheia
+            hora_fim = data_fim.strftime("%H:00")
 
-            # Preencher os horários entre início e fim
-            tempo_atual = data_inicio
+            # Preencher a agenda dentro das horas corretas
+            tempo_atual = data_inicio.replace(minute=0, second=0, microsecond=0)
             while tempo_atual <= data_fim:
-                hora_atual = tempo_atual.strftime("%H:%M")
+                hora_atual = tempo_atual.strftime("%H:00")
                 if hora_atual in agenda_grid[dia_semana]:
                     agenda_grid[dia_semana][hora_atual].append(evento)
-                tempo_atual += timedelta(minutes=15)
+                tempo_atual += timedelta(hours=1)  # Avança de hora em hora
 
     return render(request, "webagenda/listar_agendas.html", {
         "dias_da_semana": dias_da_semana,
         "horas_do_dia": horas_do_dia,
         "agenda_grid": agenda_grid,
     })
+    
+
+def _round_time(dt):
+    minutes = (dt.minute // 15) * 15
+    return dt.replace(minute=minutes, second=0, microsecond=0)
+
 
 
 def gerenciar_agenda(request, id=None):
@@ -72,12 +78,10 @@ def gerenciar_agenda(request, id=None):
         headers = {"Content-Type": "application/json"}
 
         if id:
-            # Edição de agenda existente
             response = requests.put(f"{API_URL}{id}/", json=agenda_data, headers=headers)
             if response.status_code == 200:
                 return redirect("listar_agendas")
         else:
-            # Criação de nova agenda
             response = requests.post(API_URL, json=agenda_data, headers=headers)
             if response.status_code == 201:
                 return redirect("listar_agendas")
@@ -88,7 +92,8 @@ def gerenciar_agenda(request, id=None):
         response = requests.get(f"{API_URL}{id}/")
         if response.status_code == 200:
             agenda = response.json()
-            # Ajustar formato das datas para o campo datetime-local
+            
+            # Ajustar formato das datas para string compatível com input datetime-local
             agenda['dataInicio'] = datetime.strptime(agenda['dataInicio'], "%Y-%m-%dT%H:%M:%SZ").strftime("%Y-%m-%dT%H:%M")
             agenda['dataFim'] = datetime.strptime(agenda['dataFim'], "%Y-%m-%dT%H:%M:%SZ").strftime("%Y-%m-%dT%H:%M")
 
