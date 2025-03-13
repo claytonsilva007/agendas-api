@@ -3,8 +3,8 @@
 {% block content %}
     
     <div class="col-sm-12 col-md-10 col-lg-8 col-xl-6 mx-auto mt-5">
-        <h2 class="text-center mb-4">Editar Agenda</h2>
-        <form id="agenda-form" method="post">
+        <h2 class="text-center mb-4">{% if agenda %}Editar Agenda{% else %}Criar Agenda{% endif %}</h2>
+        <form method="post">
             {% csrf_token %}
             
             <div class="form-group">
@@ -19,12 +19,12 @@
             
             <div class="form-group mt-3">
                 <label for="dataInicio">Data de Início</label>
-                <input type="datetime-local" class="form-control mt-1" id="dataInicio" name="dataInicio" value="{{ agenda.dataInicio|date:'Y-m-d\TH:i' }}" required>
+                <input type="datetime-local" class="form-control mt-1" id="dataInicio" name="dataInicio" value="{{ agenda.dataInicio|date:'Y-m-d\\TH:i' }}" required>
             </div>
             
             <div class="form-group mt-3">
                 <label for="dataFim">Data de Fim</label>
-                <input type="datetime-local" class="form-control mt-1" id="dataFim" name="dataFim" value="{{ agenda.dataFim|date:'Y-m-d\TH:i' }}" required>
+                <input type="datetime-local" class="form-control mt-1" id="dataFim" name="dataFim" value="{{ agenda.dataFim|date:'Y-m-d\\TH:i' }}" required>
             </div>
             
             <div class="form-group mt-3">
@@ -33,16 +33,16 @@
             </div>
             
             <div class="form-group mt-3">
-                <label for="estadoAtualAgenda">Estado Atual</label>
-                <select class="form-control mt-1" id="estadoAtualAgenda" name="estadoAtualAgenda">
-                    <option value="PENDENTE" {% if agenda.estadoAtualAgenda == "PENDENTE" %}selected{% endif %}>Pendente</option>
-                    <option value="CONFIRMADA" {% if agenda.estadoAtualAgenda == "CONFIRMADA" %}selected{% endif %}>Confirmada</option>
-                    <option value="CANCELADA" {% if agenda.estadoAtualAgenda == "CANCELADA" %}selected{% endif %}>Cancelada</option>
-                    <option value="CONCLUIDA" {% if agenda.estadoAtualAgenda == "CONCLUIDA" %}selected{% endif %}>Concluída</option>
+                <label for="estado_atual">Estado Atual</label>
+                <select class="form-control mt-1" id="estado_atual" name="estado_atual">
+                    <option value="RECEBIDO" {% if agenda and agenda.estado_atual == "RECEBIDO" %}selected{% endif %}>Recebido</option>
+                    <option value="CONFIRMADO" {% if agenda and agenda.estado_atual == "CONFIRMADO" %}selected{% endif %}>Confirmado</option>
+                    <option value="ATENDIDO" {% if agenda and agenda.estado_atual == "ATENDIDO" %}selected{% endif %}>Atendido</option>
+                    <option value="CANCELADO" {% if agenda and agenda.estado_atual == "CANCELADO" %}selected{% endif %}>Cancelado</option>
                 </select>
             </div>
             
-            <button type="submit" class="btn btn-primary mt-3">Salvar</button>
+            <button type="submit" class="btn btn-primary mt-3">{% if agenda %}Salvar{% else %}Criar{% endif %}</button>
 
         </form>
     </div>

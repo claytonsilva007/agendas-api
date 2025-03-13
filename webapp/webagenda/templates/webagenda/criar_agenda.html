@@ -1,41 +1,51 @@
-<!DOCTYPE html>
-<html lang="pt">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Criar Agenda</title>
-</head>
-<body>
-    <h1>Criar Nova Agenda</h1>
-    <form id="agenda-form">
-        <label>Título: <input type="text" name="titulo" required></label><br>
-        <label>Descrição: <textarea name="descricao"></textarea></label><br>
-        <label>Data Início: <input type="datetime-local" name="dataInicio" required></label><br>
-        <label>Data Fim: <input type="datetime-local" name="dataFim" required></label><br>
-        <label>Local: <input type="text" name="local" required></label><br>
-        <label>Estado: 
-            <select name="estadoAtualAgenda">
-                <option value="PENDENTE">Pendente</option>
-                <option value="CONFIRMADA">Confirmada</option>
-                <option value="CANCELADA">Cancelada</option>
-                <option value="CONCLUIDA">Concluída</option>
-            </select>
-        </label><br>
-        <button type="submit">Criar</button>
-    </form>
+{% extends "base.html" %}
 
-    <script>
-        document.getElementById("agenda-form").addEventListener("submit", async function(event) {
-            event.preventDefault();
-            const formData = new FormData(this);
-            const data = Object.fromEntries(formData);
-            await fetch("http://127.0.0.1:8000/agendas/", {
-                method: "POST",
-                headers: { "Content-Type": "application/json" },
-                body: JSON.stringify(data)
-            });
-            window.location.href = "/webapp/";
-        });
-    </script>
-</body>
-</html>
+{% block content %}
+    
+    <div class="col-sm-12 col-md-10 col-lg-8 col-xl-6 mx-auto mt-5">
+        <form method="post" action="{% url 'criar_agenda' %}">
+            {% csrf_token %}
+            
+            <div class="form-group">
+                <label for="titulo">Título</label>
+                <input type="text" class="form-control" id="titulo" name="titulo" required>
+            </div>
+            
+            <div class="form-group mt-3">
+                <label for="descricao">Descrição</label>
+                <textarea class="form-control mt-1" id="descricao" name="descricao" required></textarea>
+            </div>
+            
+            <div class="form-group mt-3">
+                <label for="dataInicio">Data de Início</label>
+                <input type="datetime-local" class="form-control mt-1" id="dataInicio" name="dataInicio" required>
+            </div>
+            
+            <div class="form-group mt-3">
+                <label for="dataFim">Data de Fim</label>
+                <input type="datetime-local" class="form-control mt-1" id="dataFim" name="dataFim" required>
+            </div>
+            
+            <div class="form-group mt-3">
+                <label for="local">Local</label>
+                <input type="text" class="form-control mt-1" id="local" name="local" required>
+            </div>
+            
+            <div class="form-group mt-3">
+                <label for="estado_atual">Estado Atual</label>
+                <select class="form-control mt-1" id="estado_atual" name="estado_atual">
+                    <option value="RECEBIDO">Recebido</option>
+                    <option value="CONFIRMADO">Confirmado</option>
+                    <option value="ATENDIDO">Atendido</option>
+                    <option value="CANCELADO">Cancelado</option>
+                </select>
+            </div>
+            
+            <button type="submit" class="btn btn-primary mt-3">Criar Agenda</button>
+
+        </form>
+    </div>
+    
+{% endblock %}
+
+{% block scripts %} {% endblock %}
