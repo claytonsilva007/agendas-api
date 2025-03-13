@@ -2,50 +2,93 @@
 {% load custom_filters %}
 
 {% block content %}
-    <div class="container mt-4">
+
+    <div class="container-fluid vh-100 d-flex flex-column align-items-center bg-dark text-white">
         
-        <h2 class="text-center mb-4">Agenda Semanal</h2>
-
-        <!-- Cabeçalho da Tabela -->
-        <div class="row bg-light text-center fw-bold py-2 bg-dark" style="border-bottom: 1px solid rgba(0, 0, 0, 0.4);">
-            <div class="col-1 col-md text-white"></div>
-            <div class="col-2 col-md text-white">Seg.</div>
-            <div class="col-2 col-md text-white">Ter.</div>
-            <div class="col-2 col-md text-white">Qua.</div>
-            <div class="col-2 col-md text-white">Qui.</div>
-            <div class="col-2 col-md text-white">Sex.</div>
+        <div class="d-flex justify-content-center align-items-center mb-3">
+            <a href="?semana_offset={{ semana_offset|add:-1 }}" class="btn btn-outline-light">&lt;</a>
+            <span class="fw-bold fs-5 px-3 text-secondary">{{ mes_atual }}</span>
+            <a href="?semana_offset={{ semana_offset|add:1 }}" class="btn btn-outline-light">&gt;</a>
         </div>
-
-        <!-- Corpo da Tabela -->
-        {% for hora in horas_do_dia %}
-            <div class="row" style="border-bottom: 1px solid rgba(0, 0, 0, 0.4);">
-                <!-- Coluna de Hora -->
-                <div class="col-1 col-md text-center bg-dark py-2 d-flex align-items-center justify-content-center" style="border-right: 1px solid rgba(0, 0, 0, 0.4);">
-                    <span class="text-white">{{ hora|slice:":2" }}</span> 
-                </div>
-                
-                <!-- Colunas dos Dias da Semana -->
-                {% for dia in dias_da_semana %}
-                    <div class="col-2 col-md py-2 position-relative" style="border-right: 1px solid rgba(0, 0, 0, 0.4); border-bottom: 1px solid rgba(0, 0, 0, 0.5); min-height: 60px; overflow: hidden;" onclick="redirecionarParaCadastro('{{ hora }}')">
-                        {% for evento in agenda_grid|dict_get:dia|dict_get:hora %}
-                            <a href="{% url 'gerenciar_agenda' evento.id %}" 
-                               class="bg-primary text-white rounded px-2 py-1 small w-100 d-flex align-items-center justify-content-center" 
-                               style="margin: 2px; text-decoration: none;">
-                                <strong>{{ evento.titulo }}</strong>
-                            </a>
+        
+        <div class="table-responsive w-100">
+            <table class="table table-dark table-bordered custom-table text-center">
+                <thead>
+                    <tr>
+                        <th></th>
+                        {% for dia in dias_da_semana %}
+                            <th>
+                                <span class="h3">{{ dia.data }}</span>
+                                <br>
+                                <span class="text-secondary">{{ dia.nome }}</span>
+                            </th>
                         {% endfor %}
-                    </div>
-                {% endfor %}
-            </div>
-        {% endfor %}
+                    </tr>
+                </thead>
+                
+                <tbody>
+                    {% for hora in horas_do_dia %}
+                        <tr>
+                            <td class="fw-bold text-light">{{ hora }}</td>
+                            {% for dia in dias_da_semana %}
+                                <td>
+                                    {% for evento in agenda_grid|dict_get:dia.nome|dict_get:hora %}
+                                        <a href="{% url 'gerenciar_agenda' evento.id %}" class="btn btn-primary btn-sm w-100 my-1">
+                                            {{ evento.titulo }}
+                                        </a>
+                                    {% endfor %}
+                                </td>
+                            {% endfor %}
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
     </div>
 {% endblock %}
 
+
+{% block styles %}
+    <style>
+        /* Removendo bordas visíveis e suavizando o layout */
+        .custom-table th,
+        .custom-table td {
+            border: 1px solid rgba(255, 255, 255, 0.05); /* Transparente e discreto */
+            padding: 30px;
+            text-align: center;
+        }
+
+        /* Tornando o cabeçalho mais suave */
+        .custom-table thead th {
+            background: transparent;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+            font-weight: 600;
+        }
+
+        /* Melhorando a aparência das células */
+        .custom-table tbody td {
+            background: rgba(255, 255, 255, 0.05); /* Fundo levemente diferenciado */
+        }
+
+        /* Ajustando hover para efeito sutil */
+        .custom-table tbody tr:hover td {
+            background: rgba(255, 255, 255, 0.1);
+            transition: background 0.3s ease;
+        }
+
+        /* Ajustando espaçamento para um visual mais moderno */
+        .custom-table td {
+            min-height: 50px;
+        }
+    </style>
+{% endblock %}
+
+
 {% block scripts %}
-<script>
-    function redirecionarParaCadastro(hora) {
-        const url = `{% url 'gerenciar_agenda' %}?hora=${hora}`;
-        window.location.href = url;
-    }
-</script>
+    <script>
+        function redirecionarParaCadastro(hora) {
+            const url = `{% url 'gerenciar_agenda' %}?hora=${hora}`;
+            window.location.href = url;
+        }
+    </script>
 {% endblock %}

@@ -3,7 +3,7 @@
     <div class="container-fluid">
         
         <!-- Logo da Navbar -->
-        <a class="navbar-brand ms-3 text-success" href="#">Webagenda</a>
+        <a class="navbar-brand ms-3 text-secondary" href="{% url 'listar_agendas' %}"><h3>Webagenda</h3></a>
         
         <!-- Botão do Offcanvas -->
         <button class="navbar-toggler bg-success" 
@@ -35,21 +35,7 @@
                    <h4 class="my-2 text-success"> Webagenda </h4>
                     <a href="" class="btn btn-success text-white text-decoration-none">Login</a>
                 </div>
-    
-                <!-- Itens do Navbar -->
-                <ul class="navbar-nav justify-content-center flex-grow-1 pe-3">
-                    
-                    <li class="nav-item">
-                        <a class="nav-link active text-warning" aria-current="page" href="{% url 'gerenciar_agenda' %}">
-                            <i class="fa-solid fa-house mx-2 d-lg-none"></i> Cadastrar
-                        </a>
-                    </li>
-                    
-                    <li class="nav-item">
-                        <a class="nav-link active text-warning" aria-current="page" href="">
-                            <i class="fa-solid fa-house mx-2 d-lg-none"></i> Menu 02
-                        </a>
-                    </li>                   
+                
             </div>
         </div>
         
