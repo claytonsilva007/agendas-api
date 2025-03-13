@@ -14,7 +14,7 @@ def listar_agendas(request):
 
     # Criar a estrutura do grid
     dias_da_semana = ["Segunda", "Terça", "Quarta", "Quinta", "Sexta"]
-    horas_do_dia = [f"{h:02d}:{m:02d}" for h in range(0, 23) for m in [0, 30]]
+    horas_do_dia = [f"{h:02d}:{m:02d}" for h in range(0, 24) for m in [0, 15, 30, 45]]
     agenda_grid = {dia: {hora: [] for hora in horas_do_dia} for dia in dias_da_semana}
 
     # Preencher o grid com eventos
@@ -24,7 +24,7 @@ def listar_agendas(request):
 
         # Verificar e corrigir o data_fim se for anterior ao data_inicio
         if data_fim <= data_inicio:
-            data_fim = data_inicio + timedelta(minutes=30)
+            data_fim = data_inicio + timedelta(minutes=15)
 
         nome_dia = data_inicio.strftime("%A")  # Nome do dia em inglês
         dia_semana = {
@@ -42,14 +42,13 @@ def listar_agendas(request):
                 hora_atual = tempo_atual.strftime("%H:%M")
                 if hora_atual in agenda_grid[dia_semana]:
                     agenda_grid[dia_semana][hora_atual].append(evento)
-                tempo_atual += timedelta(minutes=30)
+                tempo_atual += timedelta(minutes=15)
 
     return render(request, "webagenda/listar_agendas.html", {
         "dias_da_semana": dias_da_semana,
         "horas_do_dia": horas_do_dia,
         "agenda_grid": agenda_grid,
     })
-
 
 
 def gerenciar_agenda(request, id=None):
@@ -89,6 +88,9 @@ def gerenciar_agenda(request, id=None):
         response = requests.get(f"{API_URL}{id}/")
         if response.status_code == 200:
             agenda = response.json()
+            # Ajustar formato das datas para o campo datetime-local
+            agenda['dataInicio'] = datetime.strptime(agenda['dataInicio'], "%Y-%m-%dT%H:%M:%SZ").strftime("%Y-%m-%dT%H:%M")
+            agenda['dataFim'] = datetime.strptime(agenda['dataFim'], "%Y-%m-%dT%H:%M:%SZ").strftime("%Y-%m-%dT%H:%M")
 
     return render(request, "webagenda/gerenciar_agenda.html", {"agenda": agenda})
 

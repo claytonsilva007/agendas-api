@@ -19,12 +19,12 @@
             
             <div class="form-group mt-3">
                 <label for="dataInicio">Data de Início</label>
-                <input type="datetime-local" class="form-control mt-1" id="dataInicio" name="dataInicio" value="{{ agenda.dataInicio|date:'Y-m-d\\TH:i' }}" required>
+                <input type="datetime-local" class="form-control mt-1" id="dataInicio" name="dataInicio" value="{{ agenda.dataInicio }}" required>
             </div>
             
             <div class="form-group mt-3">
                 <label for="dataFim">Data de Fim</label>
-                <input type="datetime-local" class="form-control mt-1" id="dataFim" name="dataFim" value="{{ agenda.dataFim|date:'Y-m-d\\TH:i' }}" required>
+                <input type="datetime-local" class="form-control mt-1" id="dataFim" name="dataFim" value="{{ agenda.dataFim }}" required>
             </div>
             
             <div class="form-group mt-3">

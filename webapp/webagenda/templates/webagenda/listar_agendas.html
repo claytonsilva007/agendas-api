@@ -7,7 +7,7 @@
         <h2 class="text-center mb-4">Agenda Semanal</h2>
 
         <div class="row bg-light border text-center fw-bold py-2">
-            <div class="col-2 col-md">Hora</div>
+            <div class="col-1 col-md">Hora</div>
             <div class="col-2 col-md">Seg.</div>
             <div class="col-2 col-md">Ter.</div>
             <div class="col-2 col-md">Qua.</div>
@@ -17,7 +17,7 @@
 
         {% for hora in horas_do_dia %}
             <div class="row border">
-                <div class="col-2 col-md text-center bg-light py-2 d-flex align-items-center justify-content-center">{{ hora }}</div>
+                <div class="col-1 col-md text-center bg-light py-2 d-flex align-items-center justify-content-center">{{ hora }}</div>
                 
                 {% for dia in dias_da_semana %}
                     <div class="col-2 col-md border py-2 position-relative d-flex align-items-center justify-content-center" style="min-height: 50px; overflow: hidden;">
