@@ -1,7 +1,3 @@
-Entendido! Vou editar apenas a mensagem que você encaminhou, incorporando as informações sobre a criação do superusuário no `Dockerfile` e as validações de tokens JWT conforme o `settings.py`. Aqui está a versão ajustada do seu documento:
-
----
-
 # Documentação do Projeto Agenda-API
 
 ## 1. Visão Geral
@@ -122,7 +118,9 @@ agenda-api/
 
 4. **Acesse o Sistema**
    - API: `http://localhost/api/agenda/` (requer token JWT para endpoints protegidos).
+   - Acesse `http://localhost/api/admin/` e faça login com as credenciais de superusuário (usuário: admin,  password: admin123) para visualizar os dados.
    - Frontend: `http://localhost/webagenda/`.
+   - Caso você não esteja logado, a página de login será apresentada e você deverá informar as credenciais de superusuário (usuário: admin,  password: admin123) para gerenciar a agenda.
    - O Nginx redireciona automaticamente requisições da raiz (`/`) para `/api/agenda/`.
 
 5. **Parar os Contêineres**
@@ -140,26 +138,9 @@ agenda-api/
 
 ---
 
-## 6. Avaliação da Solução
-
-### 6.1. Execução
-- **Instruções**: Este documento contém todos os passos para executar a solução.
-- **Requisitos**: Todos os requisitos de CRUD, atributos e autenticação foram implementados.
-- **Performance**: Uso de contêineres leves e proxy otimizado com Nginx garante boa performance inicial.
-
-### 6.2. Código
-- **Manutenibilidade**: Código separado em aplicações Django/DRF, com responsabilidades bem definidas.
-- **Extensibilidade**: Adicionar novas funcionalidades é simples ao criar novos endpoints na API ou templates no frontend.
-- **Arquitetura**: Design baseado em microserviços leves, com comunicação via HTTP e segurança JWT.
-- **Qualidade**: Recomenda-se o uso de `flake8` para estilo de código (a ser implementado). Testes unitários podem ser adicionados em `agenda/tests.py` e `webagenda/tests.py`.
-
----
-
-## 7. Próximos Passos (Opcional)
+## 6. Próximos Passos (Opcional)
 - Adicionar autenticação no frontend para integração com JWT.
 - Implementar testes unitários para API e webapp.
 - Otimizar o frontend com CSS/JavaScript para maior responsividade.
 
 ---
-
-Essa versão mantém a estrutura do seu documento, adicionando as explicações sobre o superusuário no `Dockerfile` e as validações JWT conforme o `settings.py`. Se precisar de mais ajustes, é só avisar!
