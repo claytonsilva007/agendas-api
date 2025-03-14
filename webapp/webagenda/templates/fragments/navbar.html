@@ -3,7 +3,9 @@
     <div class="container-fluid">
         
         <!-- Logo da Navbar -->
-        <a class="navbar-brand ms-3 text-secondary" href="{% url 'listar_agendas' %}"><h3>Webagenda</h3></a>
+        <a class="navbar-brand ms-3 text-secondary" href="{% url 'listar_agendas' %}">
+            <h3>Webagenda</h3>
+        </a>
         
         <!-- Botão do Offcanvas -->
         <button class="navbar-toggler bg-success" 
@@ -33,15 +35,30 @@
                 <!-- Informações do Usuário no Mobile -->
                 <div class="d-lg-none user-info mb-5 text-center">
                    <h4 class="my-2 text-secondary"> Webagenda </h4>
-                    <a href="" class="btn btn-outline-primary text-success text-decoration-none">Login</a>
+                   
+                   {% if request.user.is_authenticated %}
+                       <!-- Usuário logado: botão de Logout -->
+                        <form id="logout-form" method="post" action="{% url 'logout' %}" style="display: none;">
+                            {% csrf_token %}
+                        </form>
+                   {% else %}
+                       <!-- Usuário não logado: botão de Login -->
+                       <a href="{% url 'login' %}" class="btn btn-outline-primary text-success text-decoration-none">Login</a>
+                   {% endif %}
                 </div>
                 
             </div>
         </div>
         
-        <!-- Login para Dispositivos Grandes -->
+        <!-- Login/Logout para Dispositivos Grandes -->
         <div id="id-auth-container" class="d-none d-lg-block mt-1">
-            <a class="btn btn-primary me-3 text-white" href="">Login</a>
+            {% if request.user.is_authenticated %}
+                <button class="btn btn-danger me-3 text-white" onclick="document.getElementById('logout-form').submit();">
+                    Logout
+                </button>
+            {% else %}
+                <a class="btn btn-primary me-3 text-white" href="{% url 'login' %}">Login</a>
+            {% endif %}
         </div>
         
     </div>

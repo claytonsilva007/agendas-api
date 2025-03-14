@@ -8,8 +8,9 @@ from django.contrib.auth.decorators import login_required
 
 register = template.Library()
 
-API_URL = "http://127.0.0.1/api/"
-# API_URL = "http://api:8000/api/"
+# API_URL = "http://127.0.0.1/api/"         # api e webapp rodando no docker
+# API_URL = "http://127.0.0.1:8000/api/"      # apenas api rodando no docker
+API_URL = "http://api:8000/api/"
 
 
 @login_required
