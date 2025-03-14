@@ -6,51 +6,46 @@ import pytz
 from webagenda.models import EstadoAgenda
 from django.contrib.auth.decorators import login_required
 
+from webagenda.api_client import APIClient
+
 register = template.Library()
 
-# API_URL = "http://127.0.0.1/api/"         # api e webapp rodando no docker
-# API_URL = "http://127.0.0.1:8000/api/"      # apenas api rodando no docker
-API_URL = "http://api:8000/api/"
+API_URL = "http://127.0.0.1/api/agenda/"         # api e webapp rodando no docker
+API_URL = "http://127.0.0.1/api/token/"      # apenas api rodando no docker
+
+# API_URL = "http://api:8000/api/agenda/"
+# API_TOKEN = "http://api:8000/api/token/"
 
 
 @login_required
 def listar_agendas(request):
-    # Captura o deslocamento de semanas a partir da URL (ex: ?semana_offset=1)
     semana_offset = int(request.GET.get("semana_offset", 0))
 
-    # Define o início da semana baseada no deslocamento
     hoje = datetime.today().astimezone(pytz.utc)
     inicio_semana = (hoje - timedelta(days=hoje.weekday()) + timedelta(weeks=semana_offset)).replace(hour=0, minute=0, second=0, microsecond=0)
     fim_semana = inicio_semana + timedelta(days=6, hours=23, minutes=59, seconds=59)
 
-    response = requests.get(API_URL)
-    eventos = response.json() if response.status_code == 200 else []
+    eventos = APIClient.get("") or []  # Obtém eventos autenticados
 
-    # Criar estrutura do grid com horas inteiras
     dias_da_semana = []
     data_referencia = inicio_semana
     
     while data_referencia <= fim_semana:
-        # Adiciona apenas dias úteis (segunda a sexta-feira)
-        if data_referencia.weekday() < 5:  # 0 = segunda-feira, 1 = terça-feira, ..., 4 = sexta-feira
+        if data_referencia.weekday() < 5:
             dias_da_semana.append({
                 "nome": data_referencia.strftime("%A"),
                 "data": data_referencia.strftime("%d"),
                 "data_completa": data_referencia.strftime("%Y-%m-%d")
             })
-        
         data_referencia += timedelta(days=1)
 
-    horas_do_dia = [f"{h:02d}:00" for h in range(7, 24)]  # Apenas horas inteiras
+    horas_do_dia = [f"{h:02d}:00" for h in range(7, 24)]
     agenda_grid = {dia["nome"]: {hora: [] for hora in horas_do_dia} for dia in dias_da_semana}
 
-    # Filtrar e preencher a agenda com eventos da semana
     for evento in eventos:
         data_inicio = datetime.strptime(evento["dataInicio"], "%Y-%m-%dT%H:%M:%SZ").replace(tzinfo=pytz.utc)
         data_fim = datetime.strptime(evento["dataFim"], "%Y-%m-%dT%H:%M:%SZ").replace(tzinfo=pytz.utc)
 
-
-        # Verificar se o evento pertence à semana atual
         if inicio_semana <= data_inicio <= fim_semana:
             nome_dia = data_inicio.strftime("%A")
             hora_inicio = data_inicio.strftime("%H:00")
