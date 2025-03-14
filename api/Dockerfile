@@ -25,6 +25,15 @@ RUN echo '#!/bin/sh' > /app/entrypoint.sh && \
     echo 'exec "$@"' >> /app/entrypoint.sh && \
     chmod +x /app/entrypoint.sh
 
+
+# Cria o super usuário
+RUN echo '#!/bin/sh' > /app/entrypoint.sh && \
+    echo 'python manage.py migrate' >> /app/entrypoint.sh && \
+    echo 'python manage.py collectstatic --noinput' >> /app/entrypoint.sh && \
+    echo 'DJANGO_SUPERUSER_USERNAME=admin DJANGO_SUPERUSER_EMAIL=admin@example.com DJANGO_SUPERUSER_PASSWORD=admin123 python manage.py createsuperuser --noinput || true' >> /app/entrypoint.sh && \
+    echo 'exec "$@"' >> /app/entrypoint.sh && \
+    chmod +x /app/entrypoint.sh
+
 # Adicione o diretório raiz ao PYTHONPATH
 ENV PYTHONPATH="/app"
 

@@ -116,3 +116,17 @@ STATIC_ROOT = os.path.join(BASE_DIR, "staticfiles")
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 STATICFILES_STORAGE = "whitenoise.storage.CompressedManifestStaticFilesStorage"
+
+LOGIN_REDIRECT_URL = '/webagenda/'  # Para onde redirecionar após login
+LOGOUT_REDIRECT_URL = '/webagenda/accounts/login/'  # Para onde redirecionar após logout
+LOGIN_URL = '/webagenda/accounts/login/'  # URL de login (padrão do Django)
+
+
+EMAIL_BACKEND = "django.core.mail.backends.smtp.EmailBackend"
+EMAIL_HOST = "smtp.seuservidor.com"
+EMAIL_PORT = 587
+EMAIL_USE_TLS = True
+EMAIL_HOST_USER = "seuemail@dominio.com"
+EMAIL_HOST_PASSWORD = "suasenha"
+
+EMAIL_BACKEND = "django.core.mail.backends.console.EmailBackend"

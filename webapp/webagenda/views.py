@@ -4,13 +4,15 @@ import requests
 from django import template
 import pytz
 from webagenda.models import EstadoAgenda
+from django.contrib.auth.decorators import login_required
 
 register = template.Library()
 
-# API_URL = "http://127.0.0.1/api/"
-API_URL = "http://api:8000/api/"
+API_URL = "http://127.0.0.1/api/"
+# API_URL = "http://api:8000/api/"
 
 
+@login_required
 def listar_agendas(request):
     # Captura o deslocamento de semanas a partir da URL (ex: ?semana_offset=1)
     semana_offset = int(request.GET.get("semana_offset", 0))
@@ -70,6 +72,7 @@ def _round_time(dt):
     return dt.replace(minute=minutes, second=0, microsecond=0)
 
 
+@login_required
 def gerenciar_agenda(request, id=None):
     
     hora_param = request.POST.get("dateTime", None)  # Captura o parâmetro hora do POST
@@ -131,7 +134,7 @@ def gerenciar_agenda(request, id=None):
     return render(request, "webagenda/gerenciar_agenda.html", context)
 
 
-
+@login_required
 def deletar_agenda(request, id):
     if request.method == "POST":
         response = requests.delete(f"{API_URL}{id}/")
