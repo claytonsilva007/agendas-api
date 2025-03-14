@@ -9,6 +9,11 @@
             <a href="?semana_offset={{ semana_offset|add:-1 }}" class="btn btn-outline-light">&lt;</a>
             <span class="fw-bold fs-5 px-3 text-secondary">{{ mes_atual }}</span>
             <a href="?semana_offset={{ semana_offset|add:1 }}" class="btn btn-outline-light">&gt;</a>
+
+            <a class="ms-3 btn btn-secondary me-3 text-dark" href="{% url 'gerenciar_agenda' %}">
+                <i class="bi bi-plus-lg"></i> <span class="fw-bold">Novo evento</span>
+            </a>
+
         </div>
         
         <div class="table-responsive w-100">
