@@ -2,8 +2,10 @@ from datetime import datetime, timedelta
 from django.shortcuts import redirect, render
 import requests
 from django import template
-register = template.Library()
+import pytz
+from webagenda.models import EstadoAgenda
 
+register = template.Library()
 
 API_URL = "http://127.0.0.1/agenda/"
 
@@ -13,9 +15,9 @@ def listar_agendas(request):
     semana_offset = int(request.GET.get("semana_offset", 0))
 
     # Define o início da semana baseada no deslocamento
-    hoje = datetime.today()
-    inicio_semana = hoje - timedelta(days=hoje.weekday()) + timedelta(weeks=semana_offset)
-    fim_semana = inicio_semana + timedelta(days=6)
+    hoje = datetime.today().astimezone(pytz.utc)
+    inicio_semana = (hoje - timedelta(days=hoje.weekday()) + timedelta(weeks=semana_offset)).replace(hour=0, minute=0, second=0, microsecond=0)
+    fim_semana = inicio_semana + timedelta(days=6, hours=23, minutes=59, seconds=59)
 
     response = requests.get(API_URL)
     eventos = response.json() if response.status_code == 200 else []
@@ -40,8 +42,9 @@ def listar_agendas(request):
 
     # Filtrar e preencher a agenda com eventos da semana
     for evento in eventos:
-        data_inicio = datetime.strptime(evento["dataInicio"], "%Y-%m-%dT%H:%M:%SZ")
-        data_fim = datetime.strptime(evento["dataFim"], "%Y-%m-%dT%H:%M:%SZ")
+        data_inicio = datetime.strptime(evento["dataInicio"], "%Y-%m-%dT%H:%M:%SZ").replace(tzinfo=pytz.utc)
+        data_fim = datetime.strptime(evento["dataFim"], "%Y-%m-%dT%H:%M:%SZ").replace(tzinfo=pytz.utc)
+
 
         # Verificar se o evento pertence à semana atual
         if inicio_semana <= data_inicio <= fim_semana:
@@ -59,7 +62,6 @@ def listar_agendas(request):
         "mes_atual": inicio_semana.strftime("%B de %Y"),
         "data_hoje": hoje.strftime("%d/%m/%Y"),
     })
-
     
 
 def _round_time(dt):
@@ -68,7 +70,8 @@ def _round_time(dt):
 
 
 def gerenciar_agenda(request, id=None):
-    hora_param = request.POST.get("hora", None)  # Captura o parâmetro hora do POST
+    
+    hora_param = request.POST.get("dateTime", None)  # Captura o parâmetro hora do POST
 
     if request.method == "POST" and not hora_param:
         titulo = request.POST.get("titulo")
@@ -108,10 +111,21 @@ def gerenciar_agenda(request, id=None):
             # Ajustar formato das datas para string compatível com input datetime-local
             agenda['dataInicio'] = datetime.strptime(agenda['dataInicio'], "%Y-%m-%dT%H:%M:%SZ").strftime("%Y-%m-%dT%H:%M")
             agenda['dataFim'] = datetime.strptime(agenda['dataFim'], "%Y-%m-%dT%H:%M:%SZ").strftime("%Y-%m-%dT%H:%M")
-
-    context = {"agenda": agenda}
+    
     if hora_param:
-        context['hora_param'] = hora_param  # Adiciona hora_param ao contexto
+        agenda = {}
+        # Adiciona ":00Z" ao formato da string para compatibilidade
+        hora_param = f"{hora_param}:00Z"
+
+        data_inicio = datetime.strptime(hora_param, "%Y-%m-%d %H:%M:%SZ")
+        agenda['dataInicio'] = data_inicio.strftime("%Y-%m-%dT%H:%M")
+        
+        data_fim = data_inicio + timedelta(minutes=30)
+        agenda['dataFim'] = data_fim.strftime("%Y-%m-%dT%H:%M")
+        
+        agenda['estado_atual'] = EstadoAgenda.RECEBIDO
+        
+    context = {"agenda": agenda}
 
     return render(request, "webagenda/gerenciar_agenda.html", context)
 

@@ -31,7 +31,7 @@
                         <tr>
                             <td class="fw-bold text-light">{{ hora }}</td>
                             {% for dia in dias_da_semana %}
-                                <td>
+                                <td onclick="redirecionarParaCadastro('{{ dia.data_completa }} {{ hora }}')">
                                     {% for evento in agenda_grid|dict_get:dia.nome|dict_get:hora %}
                                         <a href="{% url 'gerenciar_agenda' evento.id %}" class="btn btn-primary btn-sm w-100 my-1">
                                             {{ evento.titulo }}
@@ -56,6 +56,7 @@
             border: 1px solid rgba(255, 255, 255, 0.05); /* Transparente e discreto */
             padding: 30px;
             text-align: center;
+            cursor: pointer; /* Mudança de cursor para indicar que a célula é clicável */
         }
 
         /* Tornando o cabeçalho mais suave */
@@ -86,9 +87,26 @@
 
 {% block scripts %}
     <script>
-        function redirecionarParaCadastro(hora) {
-            const url = `{% url 'gerenciar_agenda' %}?hora=${hora}`;
-            window.location.href = url;
+        function redirecionarParaCadastro(dateTime) {
+            const form = document.createElement('form');
+            form.method = 'POST';
+            form.action = `{% url 'gerenciar_agenda' %}`;
+            
+            const hiddenField = document.createElement('input');
+            hiddenField.type = 'hidden';
+            hiddenField.name = 'dateTime';
+            hiddenField.value = dateTime;
+            
+            const csrfToken = document.createElement('input');
+            csrfToken.type = 'hidden';
+            csrfToken.name = 'csrfmiddlewaretoken';
+            csrfToken.value = '{{ csrf_token }}'; // Certifique-se de que o token CSRF é fornecido
+            
+            form.appendChild(hiddenField);
+            form.appendChild(csrfToken);
+            
+            document.body.appendChild(form);
+            form.submit();
         }
     </script>
 {% endblock %}
