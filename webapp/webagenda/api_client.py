@@ -33,11 +33,49 @@ class APIClient:
         return cls._token
 
     @classmethod
+    def _get_headers(cls):
+        """Retorna os headers com o token de autenticação."""
+        return {
+            "Authorization": f"Bearer {cls._get_token()}",
+            "Content-Type": "application/json"
+        }
+
+    @classmethod
     def get(cls, endpoint):
         """Realiza uma requisição GET autenticada."""
-        headers = {"Authorization": f"Bearer {cls._get_token()}"}
+        headers = cls._get_headers()
         response = requests.get(f"{API_URL}{endpoint}", headers=headers)
 
         if response.status_code == 200:
             return response.json()
         return None
+
+    @classmethod
+    def post(cls, endpoint, data):
+        """Realiza uma requisição POST autenticada."""
+        headers = cls._get_headers()
+        response = requests.post(f"{API_URL}{endpoint}", json=data, headers=headers)
+
+        if response.status_code == 201:
+            return response.json()
+        return None
+
+    @classmethod
+    def put(cls, endpoint, data):
+        """Realiza uma requisição PUT autenticada."""
+        headers = cls._get_headers()
+        response = requests.put(f"{API_URL}{endpoint}", json=data, headers=headers)
+
+        if response.status_code == 200:
+            return response.json()
+        return None
+
+    @classmethod
+    def delete(cls, endpoint):
+        """Realiza uma requisição DELETE autenticada."""
+        headers = cls._get_headers()
+        response = requests.delete(f"{API_URL}{endpoint}", headers=headers)
+
+        if response.status_code == 204:
+            return True
+        return False

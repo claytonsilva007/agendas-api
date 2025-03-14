@@ -70,7 +70,6 @@ def _round_time(dt):
 
 @login_required
 def gerenciar_agenda(request, id=None):
-    
     hora_param = request.POST.get("dateTime", None)  # Captura o parâmetro hora do POST
 
     if request.method == "POST" and not hora_param:
@@ -90,23 +89,21 @@ def gerenciar_agenda(request, id=None):
             "estado_atual": estado_atual
         }
 
-        headers = {"Content-Type": "application/json"}
-
         if id:
-            response = requests.put(f"{API_URL}{id}/", json=agenda_data, headers=headers)
-            if response.status_code == 200:
+            response = APIClient.put(f"{id}/", agenda_data)
+            if response:
                 return redirect("listar_agendas")
         else:
-            response = requests.post(API_URL, json=agenda_data, headers=headers)
-            if response.status_code == 201:
+            response = APIClient.post("", agenda_data)
+            if response:
                 return redirect("listar_agendas")
 
     agenda = None
     
     if id:
-        response = requests.get(f"{API_URL}{id}/")
-        if response.status_code == 200:
-            agenda = response.json()
+        response = APIClient.get(f"{id}/")
+        if response:
+            agenda = response
             
             # Ajustar formato das datas para string compatível com input datetime-local
             agenda['dataInicio'] = datetime.strptime(agenda['dataInicio'], "%Y-%m-%dT%H:%M:%SZ").strftime("%Y-%m-%dT%H:%M")
@@ -133,8 +130,8 @@ def gerenciar_agenda(request, id=None):
 @login_required
 def deletar_agenda(request, id):
     if request.method == "POST":
-        response = requests.delete(f"{API_URL}{id}/")
-        if response.status_code == 204:
+        success = APIClient.delete(f"{id}/")
+        if success:
             return redirect("listar_agendas")
     return redirect("listar_agendas")
 
