@@ -16,6 +16,24 @@ services:
     depends_on:
       - db
 
+  webagenda:
+    build:
+      context: ./webapp
+      dockerfile: Dockerfile    
+    container_name: webapp_container
+    expose:
+      - "8001"
+    command: gunicorn core.wsgi:application --bind 0.0.0.0:8001
+    networks:
+      - backend
+    env_file:
+      - .env
+    volumes:
+      - static_volume:/app/staticfiles
+      - media_volume:/app/media
+    depends_on:
+      - db
+
   nginx:
     image: nginx:latest
     container_name: nginx_container

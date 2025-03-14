@@ -7,7 +7,8 @@ from webagenda.models import EstadoAgenda
 
 register = template.Library()
 
-API_URL = "http://127.0.0.1/agenda/"
+# API_URL = "http://127.0.0.1/api/"
+API_URL = "http://api:8000/api/"
 
 
 def listar_agendas(request):

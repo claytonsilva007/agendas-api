@@ -10,6 +10,7 @@ WORKDIR /app
 
 # Copia todo o conteúdo do diretório atual (que já é o diretório webagenda) para /app
 COPY . /app
+# COPY webagenda /app/webagenda
 
 RUN pip install --upgrade pip
 

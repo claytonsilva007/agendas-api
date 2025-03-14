@@ -1,3 +1,5 @@
 Django
 requests
 pytz
+whitenoise
+gunicorn==23.0.0
