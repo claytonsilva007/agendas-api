@@ -10,13 +10,6 @@ from webagenda.api_client import APIClient
 
 register = template.Library()
 
-API_URL = "http://127.0.0.1/api/agenda/"         # api e webapp rodando no docker
-API_URL = "http://127.0.0.1/api/token/"      # apenas api rodando no docker
-
-# API_URL = "http://api:8000/api/agenda/"
-# API_TOKEN = "http://api:8000/api/token/"
-
-
 @login_required
 def listar_agendas(request):
     semana_offset = int(request.GET.get("semana_offset", 0))

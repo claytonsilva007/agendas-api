@@ -3,11 +3,11 @@ import datetime
 import pytz
 from django.conf import settings
 
-# API_URL = "http://api:8000/api/agenda/"
-# API_TOKEN_URL = "http://api:8000/api/token"
+API_URL = "http://api:8000/api/agenda/"
+API_TOKEN_URL = "http://api:8000/api/token/"
 
-API_URL = "http://127.0.0.1/api/agenda/"
-API_TOKEN_URL = "http://127.0.0.1/api/token/"
+# API_URL = "http://127.0.0.1/api/agenda/"
+# API_TOKEN_URL = "http://127.0.0.1/api/token/"
 
 class APIClient:
     _token = None  # Cache do token para reuso
