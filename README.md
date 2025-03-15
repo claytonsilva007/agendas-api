@@ -137,10 +137,3 @@ agenda-api/
 - Para obter um token JWT, acesse `/api/token/` com as credenciais do superusuário (`admin`, `admin123`) via POST com `username` e `password`.
 
 ---
-
-## 6. Próximos Passos (Opcional)
-- Adicionar autenticação no frontend para integração com JWT.
-- Implementar testes unitários para API e webapp.
-- Otimizar o frontend com CSS/JavaScript para maior responsividade.
-
----
